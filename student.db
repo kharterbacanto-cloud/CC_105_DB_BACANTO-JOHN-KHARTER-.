@@ -1,0 +1,52 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS student_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE student_db;
+
+-- Table: courses
+CREATE TABLE IF NOT EXISTS courses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(16) NOT NULL UNIQUE,
+  name VARCHAR(120) NOT NULL
+) ENGINE=InnoDB;
+
+-- Table: addresses
+CREATE TABLE IF NOT EXISTS addresses (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  city VARCHAR(100) NOT NULL,
+  province VARCHAR(100) DEFAULT NULL,
+  full_address VARCHAR(255) NOT NULL
+) ENGINE=InnoDB;
+
+-- Table: students
+CREATE TABLE IF NOT EXISTS students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_number VARCHAR(32) NOT NULL UNIQUE,
+  full_name VARCHAR(150) NOT NULL,
+  birthday DATE NOT NULL,
+  age TINYINT UNSIGNED NOT NULL,
+  course_id INT NOT NULL,
+  current_address_id INT DEFAULT NULL,
+  permanent_address_id INT DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (current_address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (permanent_address_id) REFERENCES addresses(id) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- Sample data: courses
+INSERT INTO courses (code, name) VALUES
+('BSCS','Bachelor of Science in Computer Science'),
+('BSIT','Bachelor of Science in Information Technology'),
+('BSBA','Bachelor of Science in Business Administration');
+
+-- Sample addresses
+INSERT INTO addresses (city, province, full_address) VALUES
+('Makati','Metro Manila','123 A. Street, Barangay X'),
+('Quezon City','Metro Manila','45 B. Avenue, Barangay Y');
+
+-- Sample students
+INSERT INTO students (student_number, full_name, birthday, age, course_id, current_address_id, permanent_address_id)
+VALUES
+('2023-0001','Juan Dela Cruz','2003-05-12',22,1,1,2),
+('2024-0002','Maria Santos','2004-11-01',20,2,2,2);
